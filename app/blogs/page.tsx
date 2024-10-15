@@ -28,7 +28,9 @@ interface Callout {
 }
 // Fetch blog data directly within the server component
 async function getBlogData(): Promise<Callout[]> {
-  const res = await fetch("http://localhost:3000/api/blog", {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const url = new URL("/api/blogs", apiUrl);
+  const res = await fetch(url.toString(), {
     next: { revalidate: 60 }, // ISR with revalidation every 60 seconds
   });
 

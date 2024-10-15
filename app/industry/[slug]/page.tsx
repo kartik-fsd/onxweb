@@ -47,7 +47,6 @@ const IndustryDetailPage = ({ params }: { params: { slug: string } }) => {
 
     return null;
   };
-  console.log(industry, params.slug, "ol");
   return (
     <>
       <ScrollToTopOnRouteChange />

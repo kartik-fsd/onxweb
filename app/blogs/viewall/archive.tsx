@@ -11,33 +11,42 @@ interface Callout {
   imageSrc: string;
   imageAlt: string;
   isFeature: number;
-  authorId: number;
-  author: string;
-  authorImageSrc: string;
   date: string;
   slug: string;
 }
 
-type PostFetch = {
-  posts: Callout[];
+interface PaginationData {
+  currentPage: number;
+  pageSize: number;
   totalCount: number;
-};
+  totalPages: number;
+}
+
+interface PostFetch {
+  posts: Callout[];
+  pagination: PaginationData;
+}
 
 function Archive() {
   const [callouts, setCallouts] = useState<Callout[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const pageSize = 6; // Define your page size here
+  const pageSize = 6;
 
   useEffect(() => {
     const fetchPosts = async () => {
       setIsLoading(true);
+      setError(null);
       try {
-        const response = await fetch(
-          `/api/pagination?page=${currentPage}&pageSize=${pageSize}`
-        );
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const url = new URL("/api/pagination", apiUrl);
+        url.searchParams.append("page", currentPage.toString());
+        url.searchParams.append("pageSize", pageSize.toString());
+
+        const response = await fetch(url.toString());
 
         if (!response.ok) {
           throw new Error("Failed to fetch posts");
@@ -45,14 +54,12 @@ function Archive() {
 
         const data: PostFetch = await response.json();
 
-        // Directly use the known structure of data
         setCallouts(data.posts);
-        setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calculate the total number of pages
+        setTotalPages(data.pagination.totalPages);
         window.scroll(0, 0);
       } catch (error) {
         console.error("Error fetching posts:", error);
-        setCallouts([]);
-        setTotalPages(1);
+        setError("Failed to fetch posts. Please try again later.");
       } finally {
         setIsLoading(false);
       }
@@ -77,13 +84,22 @@ function Archive() {
     return <Loading />;
   }
 
-  if (callouts.length === 0) {
+  if (error) {
     return (
       <div className="flex h-40 items-center justify-center">
-        <span className="text-lg text-gray-500">End of the result!</span>
+        <span className="text-lg text-red-500">{error}</span>
       </div>
     );
   }
+
+  if (callouts.length === 0) {
+    return (
+      <div className="flex h-40 items-center justify-center">
+        <span className="text-lg text-gray-500">No posts found!</span>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">

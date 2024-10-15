@@ -15,7 +15,9 @@ interface Callout {
 }
 
 async function getBlogData(): Promise<Callout[]> {
-  const res = await fetch("http://localhost:3000/api/blog", {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const url = new URL("/api/blogs", apiUrl);
+  const res = await fetch(url.toString(), {
     next: { revalidate: 60 },
   });
 
@@ -60,7 +62,7 @@ const Insights = async () => {
           <a
             key={index}
             className="group flex flex-col focus:outline-none"
-            href={`/blog/${insight.slug}-${insight.id}`}
+            href={`/blogs/${insight.slug}-${insight.id}`}
           >
             <div className="relative pt-[50%] sm:pt-[70%] rounded-xl overflow-hidden">
               <Image
@@ -96,8 +98,8 @@ const Insights = async () => {
           <Image
             src={featuredCard.img}
             alt={featuredCard.title}
-            layout="fill"
-            objectFit="cover"
+            fill
+            style={{ objectFit: "cover" }}
             className="rounded-xl group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">

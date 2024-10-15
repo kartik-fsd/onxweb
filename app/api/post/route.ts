@@ -1,23 +1,30 @@
-import { Post } from '@/components/types/post';
-import pool from '@/lib/db';
+import { PoolConnection, ResultSetHeader } from 'mysql2/promise';
 import { NextRequest, NextResponse } from 'next/server';
+import pool from '@/lib/db';
+import { BlogFormData } from '@/types/types';
 
-export async function POST(req: NextRequest) {
+interface PostInsertResult extends ResultSetHeader {
+    insertId: number;
+}
+
+export async function POST(req: NextRequest): Promise<NextResponse> {
+    let connection: PoolConnection | undefined;
+
     try {
-        const body: Post = await req.json();
+        const body: BlogFormData = await req.json();
         // Basic validation
         if (!body.title || !body.slug) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
         // Connect to the MySQL database
-        const connection = await pool.getConnection();
+        connection = await pool.getConnection();
 
         try {
             // Start a transaction
             await connection.beginTransaction();
             // Insert post data into the database
-            const [result] = await connection.execute(
+            const [result] = await connection.execute<PostInsertResult>(
                 `INSERT INTO posts (title, slug, category, description, mainImageSrc, mainImageCaption, isFeature, blog_read) 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
@@ -28,36 +35,38 @@ export async function POST(req: NextRequest) {
                     body.src,
                     body.caption,
                     body.isFeature,
-                    body?.blog_read
+                    body.blog_read ?? null
                 ]
             );
 
-            const postId = (result as any).insertId;
+            const postId = result.insertId;
 
             // Insert body content fields dynamically
             const bodyInsertPromises = body.body.map((field) => {
                 if ('subheading' in field) {
-                    return connection.execute(
+                    return connection!.execute(
                         `INSERT INTO post_body (postId, type, content) VALUES (?, 'subheading', ?)`,
                         [postId, field.subheading]
                     );
                 }
                 if ('paragraph' in field) {
-                    return connection.execute(
+                    return connection!.execute(
                         `INSERT INTO post_body (postId, type, content) VALUES (?, 'paragraph', ?)`,
                         [postId, field.paragraph]
                     );
                 } else if ('quote' in field) {
-                    return connection.execute(
+                    return connection!.execute(
                         `INSERT INTO post_body (postId, type, content) VALUES (?, 'quote', ?)`,
                         [postId, field.quote]
                     );
                 } else if ('image' in field) {
-                    return connection.execute(
+                    return connection!.execute(
                         `INSERT INTO post_body (postId, type, src, caption) VALUES (?, 'image', ?, ?)`,
                         [postId, field.image.src, field.image.caption]
                     );
                 }
+                // This should never happen if BlogFormData is correctly typed
+                throw new Error('Invalid body field type');
             });
 
             // Ensure all body insert operations succeed

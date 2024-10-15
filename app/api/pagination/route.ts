@@ -1,77 +1,91 @@
-import pool from '@/lib/db';
+import { PoolConnection, RowDataPacket } from 'mysql2/promise';
 import { NextRequest, NextResponse } from 'next/server';
+import pool from '@/lib/db';
 
-export async function GET(req: NextRequest) {
+interface PostRow extends RowDataPacket {
+    id: number;
+    title: string;
+    slug: string;
+    category: string;
+    mainImageSrc: string;
+    mainImageCaption: string;
+    createdAt: string;
+    isFeature: boolean;
+}
+
+interface StructuredPost {
+    id: number;
+    description: string;
+    name: string;
+    imageSrc: string;
+    imageAlt: string;
+    isFeature: boolean;
+    date: string;
+    slug: string;
+}
+
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest): Promise<NextResponse> {
+    let connection: PoolConnection | undefined;
+
     try {
-        // Extract query parameters for pagination
-        const { searchParams } = new URL(req.url);
-        const page = parseInt(searchParams.get('page') || '1', 10);
-        const pageSize = parseInt(searchParams.get('pageSize') || '10', 10);
+        const url = new URL(req.url);
+        const page = parseInt(url.searchParams.get('page') || '1', 10);
+        const pageSize = parseInt(url.searchParams.get('pageSize') || '10', 10);
 
-        // Ensure that page and pageSize are valid numbers
-        if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+        if (isNaN(page) || isNaN(pageSize) || page < 1 || pageSize < 1) {
             return NextResponse.json({ error: 'Invalid pagination parameters' }, { status: 400 });
         }
 
-        // Calculate offset for pagination
         const offset = (page - 1) * pageSize;
 
-        // Connect to the MySQL database
-        const connection = await pool.getConnection();
+        connection = await pool.getConnection();
 
-        try {
-            // Query to get the paginated posts
-            const postsQuery = `
-                SELECT 
-                    id, title, slug, category,
-                    mainImageSrc, mainImageCaption, createdAt as date, isFeature
-                FROM posts
-                LIMIT ${connection.escape(pageSize)} OFFSET ${connection.escape(offset)}
-            `;
+        const postsQuery = `
+            SELECT 
+                id, title, slug, category,
+                mainImageSrc, mainImageCaption, createdAt, isFeature
+            FROM posts
+            ORDER BY createdAt DESC
+            LIMIT ? OFFSET ?
+        `;
 
-            // Query to get the total count of posts
-            const countQuery = `
-                SELECT COUNT(*) as totalCount
-                FROM posts
-            `;
+        const countQuery = 'SELECT COUNT(*) as total FROM posts';
 
-            // Execute both queries
-            const [postsRows] = await connection.query(postsQuery) as [any[], any];
-            const [countRows] = await connection.query(countQuery) as [any[], any];
+        const [postsRows] = await connection.query<PostRow[]>(postsQuery, [pageSize, offset]);
+        const [countRows] = await connection.query<RowDataPacket[]>(countQuery);
 
-            if (postsRows.length === 0) {
-                return NextResponse.json({ error: 'No posts found' }, { status: 404 });
-            }
-
-            // Extract the total count from the count query result
-            const totalCount = countRows[0].totalCount;
-
-            // Structure the response
-            const posts = postsRows.map((row) => {
-                const {
-                    id, title, category,
-                    mainImageSrc, mainImageCaption,
-                    date, isFeature, slug
-                } = row;
-
-                return {
-                    id,
-                    description: title,
-                    name: category,
-                    imageSrc: mainImageSrc,
-                    imageAlt: mainImageCaption,
-                    isFeature,
-                    date,
-                    slug
-                };
-            });
-
-            return NextResponse.json({ posts, totalCount }, { status: 200 });
-        } finally {
-            await connection.release();
+        if (postsRows.length === 0 && page !== 1) {
+            return NextResponse.json({ error: 'No posts found for this page' }, { status: 404 });
         }
+
+        const posts: StructuredPost[] = postsRows.map((row) => ({
+            id: row.id,
+            description: row.title,
+            name: row.category,
+            imageSrc: row.mainImageSrc,
+            imageAlt: row.mainImageCaption,
+            isFeature: row.isFeature,
+            date: row.createdAt,
+            slug: row.slug
+        }));
+
+        const totalCount = (countRows[0] as RowDataPacket).total;
+
+        return NextResponse.json({
+            posts,
+            pagination: {
+                currentPage: page,
+                pageSize,
+                totalCount,
+                totalPages: Math.ceil(totalCount / pageSize)
+            }
+        }, { status: 200 });
     } catch (error) {
         console.error('Error fetching posts:', error);
         return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
+    } finally {
+        if (connection) await connection.release();
     }
 }

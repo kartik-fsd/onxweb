@@ -21,7 +21,8 @@ export interface Blog {
 // Fetch data for the server-side component
 async function fetchBlogData(slug: string): Promise<Blog | null> {
   try {
-    const res = await fetch(`http://localhost:3000/api/blogs/${slug}`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/api/blog/${slug}`, {
       cache: "no-store", // Ensures fresh data fetch
     });
 
