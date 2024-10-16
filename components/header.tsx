@@ -178,17 +178,20 @@ export default function HeaderNavbar() {
                       </DisclosureButton>
                       <DisclosurePanel className="mt-2 space-y-2">
                         {[...services].map((item) => (
-                          <DisclosureButton
+                          <Link
                             key={item.name}
-                            as="a"
                             href={item.href}
-                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                            passHref
+                            legacyBehavior
                           >
-                            <a target="_blank" rel="noopener noreferrer">
-                              {" "}
+                            <a
+                              className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-800 hover:bg-gray-100"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               {item.name}
                             </a>
-                          </DisclosureButton>
+                          </Link>
                         ))}
                       </DisclosurePanel>
                     </>

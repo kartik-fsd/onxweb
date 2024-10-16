@@ -84,6 +84,9 @@ export const metadata = {
     address: false,
     telephone: false,
   },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 const Installation = () => {

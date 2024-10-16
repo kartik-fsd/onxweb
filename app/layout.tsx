@@ -5,12 +5,13 @@ import HeaderNavbar from "@/components/header";
 import Footer from "@/components/footer";
 import LenisScroll from "../lib/scroll";
 import ScrollTopButton from "@/components/scrollUp";
+import { Metadata } from "next";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL("https://www.onxwork.com"),
   title: {
     default: "ONX - India's Leading B2B Field Service Marketplace",
@@ -52,7 +53,7 @@ export const metadata = {
     type: "website",
     locale: "en_IN",
     url: "https://www.onxwork.com/",
-    siteName: "ONX",
+    siteName: "OnxWork",
     title: "ONX - Leading B2B Field Service Marketplace",
     description:
       "ONX provides scalable onboarding and installation services for businesses across retail, telecom, and logistics industries in India.",
@@ -85,8 +86,26 @@ export const metadata = {
       "max-snippet": -1,
     },
   },
+  alternates: {
+    canonical: "/",
+  },
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/180.png", sizes: "180x180", type: "image/png" },
+      {
+        url: "/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
 };
-
 interface RootLayoutProps {
   children: ReactNode;
 }
@@ -94,11 +113,6 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      </head>
       <body className={montserrat.className}>
         <LenisScroll />
         <HeaderNavbar />

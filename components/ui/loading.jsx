@@ -3,7 +3,7 @@ export default function Loading() {
     <div className="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
       {new Array(6).fill().map((item, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <div key={index}>
+        <div key={item + index}>
           <SkeletonImg />
         </div>
       ))}

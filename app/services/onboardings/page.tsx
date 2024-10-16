@@ -17,11 +17,28 @@ export const metadata = {
   generator: "Onx",
   applicationName: "Onx",
   referrer: "origin-when-cross-origin",
-  title: "Onx -B2B Onboarding services | Cut Time by 50% ",
+  title: "ONX - B2B Onboarding services | Cut Time by 50% ",
   description:
     "Efficient and scalable onboarding services tailored for B2B companies. Onx by Awign helps businesses streamline their onboarding processes with expert field teams",
+  keywords: [
+    "onboarding services India",
+    "B2B field services",
+    "onsite onboarding",
+    "Ecommerce Services",
+    "Hospitality Services",
+    "Mobility Services",
+    "Logistics Services",
+    "BFSI Services",
+    "scalable onboareding solutions",
+    "specialized onboarding tools for SMEs",
+    "nationwide installation services",
+    "ONX by Awign",
+    "ONX",
+    "OnxWork",
+    "onboarding solutions for diverse culinary",
+  ],
   openGraph: {
-    url: "https://www.onx.com/",
+    url: "https://www.onxwork.com/services/onboardings",
     title: "Onx - B2B Onboarding services | Cut Time by 50% ",
     description:
       "Efficient and scalable onboarding services tailored for B2B companies. Onx by Awign helps businesses streamline their onboarding processes with expert field teams",
@@ -52,13 +69,16 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     domain: "onx.com",
-    url: "https://www.onx.com/",
+    url: "https://www.onx.com/services/onboardings",
     title: "Onx -B2B Onboarding Automation | Cut Time by 50% ",
     description:
       "Efficient and scalable onboarding services tailored for B2B companies. Onx by Awign helps businesses streamline their onboarding processes with expert field teams",
     images: ["https://tm-integration-aws.s3.amazonaws.com/passbook.jpg"],
   },
   creator: "Kartik Shettar",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 const Onboarding = () => {
@@ -66,7 +86,7 @@ const Onboarding = () => {
     <>
       <HeroSection />
       <ClientLogoShowcase logos={onboardingPageLogos} />
-      <OnxSolutions solutions={solutions} service="Onbording" />
+      <OnxSolutions solutions={solutions} service="Onboarding" />
       <WhyChooseUs
         title="Why Choose Us"
         description="Discover the Onx advantage in onboarding services"

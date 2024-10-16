@@ -1,0 +1,23 @@
+{
+  "name": "OnxWork",
+  "short_name": "Onx",
+  "description": "ONX provides scalable onboarding and installation services for businesses across retail, telecom, and logistics industries in India.",
+  "start_url": "/",
+  "display": "standalone",
+  "id": "/",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

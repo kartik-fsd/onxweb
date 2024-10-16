@@ -111,9 +111,9 @@ const ServiceCarousel: React.FC = () => {
                     src={services[currentIndex].image}
                     alt={services[currentIndex].title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     style={{ objectFit: "cover" }}
                     className="rounded-t-xl md:rounded-l-xl md:rounded-t-none"
-                    //loading="lazy"
                     priority
                   />
                   <div

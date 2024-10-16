@@ -59,7 +59,7 @@ const Insights = async () => {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {insights.slice(0, 2).map((insight, index) => (
-          <a
+          <Link
             key={index}
             className="group flex flex-col focus:outline-none"
             href={`/blogs/${insight.slug}-${insight.id}`}
@@ -87,7 +87,7 @@ const Insights = async () => {
                 <ChevronRightIcon className="h-4 w-4" />
               </p>
             </div>
-          </a>
+          </Link>
         ))}
 
         {/* Hardcoded featured card */}
@@ -99,10 +99,11 @@ const Insights = async () => {
             src={featuredCard.img}
             alt={featuredCard.title}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             style={{ objectFit: "cover" }}
             className="rounded-xl group-hover:scale-105 transition-transform duration-300"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent">
             <div className="absolute inset-0 flex flex-col justify-between p-4 md:p-6">
               <h3 className="text-xl text-white/90 group-hover:text-white transition-colors duration-300">
                 <span className="font-bold">{featuredCard.title}</span>

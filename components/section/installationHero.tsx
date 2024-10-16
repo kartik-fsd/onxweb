@@ -11,8 +11,8 @@ function HeroInstallation() {
             <span className="text-indigo-600">B2B Companies</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            India&apos;s #1 Field Service Platform for Seamless Installation
-            Solutions Across Industries
+            India&apos;s trusted Field Service Platform for Seamless
+            Installation Solutions Across Industries
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-12">

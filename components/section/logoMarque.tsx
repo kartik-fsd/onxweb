@@ -101,7 +101,7 @@ export default function ClientLogoShowcase({
                     alt={logo.name}
                     width={90}
                     height={90}
-                    className="object-contain"
+                    className="object-contain w-auto h-auto max-w-full max-h-full"
                   />
                 </motion.div>
               </div>

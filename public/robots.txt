@@ -1,6 +1,22 @@
+User-agent: Googlebot
+Disallow: 
+User-agent: googlebot-image
+Disallow: 
+User-agent: googlebot-mobile
+Disallow: 
+User-agent: MSNBot
+Disallow: 
+User-agent: Slurp
+Disallow: 
+User-agent: yahoo-mmcrawler
+Disallow: 
+User-agent: yahoo-blogs/v3.9
+Disallow: 
 User-agent: *
+Disallow: 
+Disallow: /cgi-bin/
 Disallow: /admin
 Disallow: /404
-Allow: /
-
+Disallow: /not-found
+Disallow: /manifest.json
 Sitemap: https://www.onxwork.com/sitemap.xml

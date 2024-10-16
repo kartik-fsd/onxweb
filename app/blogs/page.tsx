@@ -5,15 +5,20 @@ import Link from "next/link";
 
 // Define metadata for the Blogs page
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.onxwork.com/blogs"),
   title: "Our Blog | ONX - Leading B2B Field Service Marketplace",
   description:
-    "Explore the latest insights on gig staffing, telecalling, Onx-Awign services, and more.",
+    "Explore the latest insights on onboarding, installations, Onx services, and more.",
   openGraph: {
     title: "Our Blog | ONX - Leading B2B Field Service Marketplace",
     description:
-      "Explore the latest insights on gig staffing, telecalling, Onx-Awign services, and more.",
+      "Explore the latest insights on onboarding, installations, Onx services, and more.",
     url: "https://www.onxwork.com/blogs",
   },
+  alternates: {
+    canonical: "/",
+  },
+  referrer: "origin-when-cross-origin",
 };
 
 interface Callout {
